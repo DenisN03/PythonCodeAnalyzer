@@ -3,6 +3,7 @@ Python Code Analyzer
 
 This program is designed to improve code written in python.
 The program uses the following packages:
+
 1. pylint_
 2. yapf_
 3. isort_
@@ -29,7 +30,7 @@ where:
     -h   show this help text
     -d   disable some pylint checks
     -pw  disable some imports from pylint checks (invalid-name)
-    -req generate requirements file for project
-    -e   set the exclude path (only one folder support)"
+    -req   generate requirements file for project
+    -e  set the exclude path (only one folder support)
 
 In the future, the functionality of the program will expand.
