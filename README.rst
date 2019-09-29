@@ -29,9 +29,9 @@ Program usage example::
 where:
     -e   set the exclude path (only one folder support)
     -d   disable some pylint checks
-    -pw  disable some imports from pylint checks  (invalid-name)
+    -pw  disable some imports from pylint checks (invalid-name)
     -s   saving a detailed report
-    -req generate requirements file for project
+    -req  generate requirements file for project
     -h   show this help text
 
 In the future, the functionality of the program will expand.
