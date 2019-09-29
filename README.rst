@@ -24,13 +24,14 @@ Usage
 
 Program usage example::
 
-    $ ./PythonCodeAnalyzer.sh [-e(--exclude)] [-d(--disable)] [-pw(--pkg-whitelist)] [-req(--requirements)] [-h(--help)]
+    $ ./PythonCodeAnalyzer.sh [-e(--exclude)] [-d(--disable)] [-pw(--pkg-whitelist)] [-s(--save)] [-req(--requirements)] [-h(--help)]
 
 where:
-    -h   show this help text
+    -e   set the exclude path (only one folder support)
     -d   disable some pylint checks
-    -pw  disable some imports from pylint checks (invalid-name)
-    -req   generate requirements file for project
-    -e  set the exclude path (only one folder support)
+    -pw  disable some imports from pylint checks  (invalid-name)
+    -s   saving a detailed report
+    -req generate requirements file for project
+    -h   show this help text
 
 In the future, the functionality of the program will expand.

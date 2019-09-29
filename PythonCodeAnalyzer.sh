@@ -3,21 +3,25 @@
 PYTHON=python3
 packs=()
 
-VERSION=1.0
+VERSION=1.1
 
 echo "Python Code Analyzer ver. $VERSION"
 
 echo
 usage="Program to improve and analyze python code. \
 
-usage: $(basename "$0") [-e(--exclude)] [-d(--disable)] [-pw(--pkg-whitelist)] [-req(--requirements)] [-h(--help)] \
+usage: $(basename "$0") [-e(--exclude)] [-d(--disable)] [-pw(--pkg-whitelist)] [-s(--save)] [-req(--requirements)] [-h(--help)] \
 
 where:
-    -h   show this help text
+    -e   set the exclude path (only one folder support)
     -d   disable some pylint checks
     -pw  disable some imports from pylint checks
+    -s   saving a detailed report
     -req generate requirements file for project
-    -e   set the exclude path (only one folder support)"
+    -h   show this help text"
+
+RED='\033[0;31m'
+NC='\033[0m'
 
 for i in "$@"
 do
@@ -34,6 +38,10 @@ case $i in
     WHITELIST="${i#*=}"
     shift
     ;;
+    -s|--save)
+    SAVE==YES
+    shift
+    ;;
     -req|--requirements)
     REQUIREMENTS=YES
     shift
@@ -43,6 +51,8 @@ case $i in
     exit
     ;;
     *)
+    echo -e "${RED}Error:${NC} no such option: $i"
+    exit
     ;;
 esac
 done
@@ -103,15 +113,36 @@ for f in $FILES
         autoflake --in-place $f
     done
 
+if [ ! -z ${SAVE} ]
+then
+    if [ ! -d ./pca_report ]; then
+        mkdir -p ./pca_report;
+    fi
+fi
+
 echo
 echo Final testing.
 for f in $FILES
     do
         echo
         echo $f
-        SCORE=$($PYTHON -c"from pylint.lint import Run; results = Run(['$f', '--disable=${DISABLE}',\
-        '--extension-pkg-whitelist=${WHITELIST}', '--output-format=text'], do_exit=False);\
-        score = results.linter.stats['global_note']" 2>&1 /dev/null) #/dev/null
+
+        if [ -z ${SAVE} ]
+        then
+            SCORE=$($PYTHON -c"from pylint.lint import Run; results = Run(['$f', '--disable=${DISABLE}',\
+            '--extension-pkg-whitelist=${WHITELIST}', '--output-format=text'], do_exit=False);\
+            score = results.linter.stats['global_note']" 2>&1 /dev/null)
+        else
+            filename=$(basename -- "$f")
+            filename="${filename%.*}"
+            file=./pca_report/"${filename}".txt
+
+            $PYTHON -c"from pylint.lint import Run; results = Run(['$f', '--disable=${DISABLE}',\
+            '--extension-pkg-whitelist=${WHITELIST}', '--output-format=text'], do_exit=False);\
+            score = results.linter.stats['global_note']" > $file
+
+            SCORE=$(<$file)
+        fi
 
         delimiter=Your' 'code' 'has' 'been' 'rated' 'at
         s=$SCORE$delimiter
